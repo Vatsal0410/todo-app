@@ -1,7 +1,17 @@
 export interface Todo {
-    id: string
-    title: string
-    completed: boolean
-    createdAt: string
-    updatedAt: string
+  id: string
+  userId: string
+
+  title: string
+  description: string | null
+  completed: boolean
+  completedAt: Date | null
+
+  dueDate: Date | null
+  priority: number
+
+  archivedAt: Date | null
+
+  createdAt: Date
+  updatedAt: Date
 }

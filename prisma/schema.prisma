@@ -5,8 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -15,11 +14,85 @@ datasource db {
 }
 
 model Todo {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  title     String
-  completed Boolean
-  createdAt DateTime @default(now())
-  updaredAt DateTime @updatedAt
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
 
+  title       String
+  description String?
+  completed   Boolean   @default(false)
+  completedAt DateTime?
+
+  dueDate  DateTime?
+  priority Int       @default(0)
+
+  archivedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([completed])
+  @@index([dueDate])
   @@index([createdAt])
+}
+
+model User {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  name          String?
+  email         String?  @unique
+  password      String?
+  emailVerified DateTime?
+  image         String?
+
+  todos    Todo[]
+  accounts Account[]
+  sessions Session[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+}
+
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionToken String   @unique
+  userId       String   @db.ObjectId
+  expires      DateTime
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model Tag {
+  id     String  @id @default(auto()) @map("_id") @db.ObjectId
+  name   String
+  color  String?
+  userId String? @db.ObjectId
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }
