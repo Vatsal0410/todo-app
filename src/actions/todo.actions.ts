@@ -176,27 +176,32 @@ export async function getTodos({
   archived = false,
   sort = "created",
   order,
-  query
+  query,
+  priority,
 }: {
   archived?: boolean;
   sort?: "created" | "due" | "priority";
   order?: "asc" | "desc";
-  query?: string
+  query?: string;
+  priority?: number;
 }) {
   const userId = await getUserId();
 
   const baseWhere = {
     userId,
     archivedAt: archived ? { not: null } : null,
-    ...(query ? {
-      title: {
-        contains: query,
-        mode: "insensitive" as const,
-      }
-    } : {})
+    ...(query
+      ? {
+          title: {
+            contains: query,
+            mode: "insensitive" as const,
+          },
+        }
+      : {}),
+    ...(priority !== undefined ? { priority } : {}),
   };
 
-  const direction = order ?? (sort === "due" ? "asc" : "desc")
+  const direction = order ?? (sort === "due" ? "asc" : "desc");
 
   // Sort by due date
   if (sort === "due") {

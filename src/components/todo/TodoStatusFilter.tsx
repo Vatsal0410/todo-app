@@ -24,7 +24,7 @@ function TodoStatusFilter() {
     router.push(`/?${params.toString()}`);
   }
   return (
-    <div className="flex justify-center gap-2 text-sm">
+    <div className="flex justify-center gap-2 text-sm" title="Filter by status">
       {STATUSES.map((status) => (
         <button
           onClick={() => setStatus(status)}

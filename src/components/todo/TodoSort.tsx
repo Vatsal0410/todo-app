@@ -32,7 +32,7 @@ export default function TodoSort({
   }
 
   return (
-    <div className="flex items-center justify-center gap-3 text-sm">
+    <div className="flex items-center justify-center gap-3 text-sm" title="Sort by">
       <div className="flex gap-2">
         {(["created", "due", "priority"] as const).map((key) => (
           <button

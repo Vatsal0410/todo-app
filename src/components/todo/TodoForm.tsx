@@ -27,8 +27,6 @@ export default function TodoForm() {
     const dueDate =
       rawDueDate && rawDueDate.length > 0 ? new Date(rawDueDate) : null;
 
-    if(formData) console.log(formData)
-
     startTransition(async () => {
       try {
         await createTodo({
