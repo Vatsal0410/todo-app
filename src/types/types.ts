@@ -17,3 +17,5 @@ export interface Todo {
 }
 
 export type Status = "all" | "active" | "completed" | "archived";
+
+export type ViewMode = "flat" | "grouped"

@@ -8,8 +8,9 @@ import TodoSort from "@/components/todo/TodoSort";
 import TodoSearch from "@/components/todo/TodoSearch";
 import TodoStatusFilter from "@/components/todo/TodoStatusFilter";
 import TodoPriorityFilter from "@/components/todo/TodoPriorityFilter";
-import { Todo } from "@/types/types";
+import { Todo, ViewMode } from "@/types/types";
 import TodoListSection from "@/components/todo/TodoListSection";
+import TodoViewToggle from "@/components/todo/TodoViewToggle";
 
 export default async function Home({
   searchParams,
@@ -20,6 +21,7 @@ export default async function Home({
     q?: string;
     status?: string;
     priority?: string;
+    view?: ViewMode;
   }>;
 }) {
   const session = await getServerSession(authOptions);
@@ -29,6 +31,8 @@ export default async function Home({
   }
 
   const params = await searchParams;
+
+  const view = params?.view === "grouped" ? "grouped" : "flat";
 
   const query =
     typeof params?.q === "string" && params.q.trim()
@@ -109,6 +113,7 @@ export default async function Home({
           <TodoSort value={sort} />
           <TodoStatusFilter />
           <TodoPriorityFilter />
+          <TodoViewToggle />
         </div>
 
         {showActive && (
@@ -119,28 +124,43 @@ export default async function Home({
                 {activeTodos.length}
               </h2>
             </div>
-            {overDue.length > 0 && (
-              <TodoListSection title="Overdue" length={overDue.length}>
-                <TodoList todos={overDue} />
-              </TodoListSection>
-            )}
 
-            {todayDue.length > 0 && (
-              <TodoListSection title="Today" length={todayDue.length}>
-                <TodoList todos={todayDue} />
-              </TodoListSection>
-            )}
+            {view === "flat" &&
+              (activeTodos.length > 0 ? (
+                <TodoList todos={activeTodos} />
+              ) : (
+                <p className="text-sm text-zinc-500">No active todos</p>
+              ))}
 
-            {upComing.length > 0 && (
-              <TodoListSection title="Upcoming" length={upComing.length}>
-                <TodoList todos={upComing} />
-              </TodoListSection>
-            )}
+            {view === "grouped" && (
+              <>
+                {overDue.length > 0 && (
+                  <TodoListSection title="Overdue" length={overDue.length}>
+                    <TodoList todos={overDue} />
+                  </TodoListSection>
+                )}
 
-            {noDueDate.length > 0 && (
-              <TodoListSection title="No Due Date" length={noDueDate.length}>
-                <TodoList todos={noDueDate} />
-              </TodoListSection>
+                {todayDue.length > 0 && (
+                  <TodoListSection title="Today" length={todayDue.length}>
+                    <TodoList todos={todayDue} />
+                  </TodoListSection>
+                )}
+
+                {upComing.length > 0 && (
+                  <TodoListSection title="Upcoming" length={upComing.length}>
+                    <TodoList todos={upComing} />
+                  </TodoListSection>
+                )}
+
+                {noDueDate.length > 0 && (
+                  <TodoListSection
+                    title="No Due Date"
+                    length={noDueDate.length}
+                  >
+                    <TodoList todos={noDueDate} />
+                  </TodoListSection>
+                )}
+              </>
             )}
           </section>
         )}
