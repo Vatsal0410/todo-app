@@ -176,16 +176,24 @@ export async function getTodos({
   archived = false,
   sort = "created",
   order,
+  query
 }: {
   archived?: boolean;
   sort?: "created" | "due" | "priority";
   order?: "asc" | "desc";
+  query?: string
 }) {
   const userId = await getUserId();
 
   const baseWhere = {
     userId,
     archivedAt: archived ? { not: null } : null,
+    ...(query ? {
+      title: {
+        contains: query,
+        mode: "insensitive" as const,
+      }
+    } : {})
   };
 
   const direction = order ?? (sort === "due" ? "asc" : "desc")

@@ -5,11 +5,12 @@ import { getTodos } from "@/actions/todo.actions";
 import TodoForm from "@/components/todo/TodoForm";
 import TodoList from "@/components/todo/TodoList";
 import TodoSort from "@/components/todo/TodoSort";
+import TodoSearch from "@/components/todo/TodoSearch";
 
 export default async function Home({
   searchParams,
 }: {
-  searchParams?: Promise<{ sort?: string; order?: string }>;
+  searchParams?: Promise<{ sort?: string; order?: string; q?: string }>;
 }) {
   const session = await getServerSession(authOptions);
 
@@ -18,6 +19,11 @@ export default async function Home({
   }
 
   const params = await searchParams;
+
+  const query =
+    typeof params?.q === "string" && params.q.trim()
+      ? params.q.trim()
+      : undefined;
 
   const sort =
     params?.sort === "due" || params?.sort === "priority"
@@ -29,8 +35,13 @@ export default async function Home({
       ? params.order
       : undefined;
 
-  const todos = await getTodos({ sort, order });
-  const archivedTodos = await getTodos({ archived: true });
+  const todos = await getTodos({ sort, order, query });
+  const archivedTodos = await getTodos({
+    sort,
+    order,
+    archived: true,
+    query,
+  });
 
   const activeTodos = todos.filter((t) => !t.completed);
   const completedTodos = todos.filter((t) => t.completed);
@@ -40,6 +51,9 @@ export default async function Home({
       <main className="mx-auto w-full max-w-3xl px-4 py-6 sm:py-8">
         <TodoForm />
 
+        <div className="mt-6">
+          <TodoSearch />
+        </div>
         <div className="mt-6">
           <TodoSort value={sort} />
         </div>
