@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 
-export default function TodoEditInput({
+function TodoEditInput({
   initialValue,
   onSave,
   onCancel,
@@ -33,3 +33,5 @@ export default function TodoEditInput({
     />
   );
 }
+
+export default memo(TodoEditInput);

@@ -112,7 +112,7 @@ function TodoItem({
   }
 
   const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString();
+    return new Date(date).toLocaleDateString('en-IN');
   }
 
   return (

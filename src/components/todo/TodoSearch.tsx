@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -19,7 +19,12 @@ export default function TodoSearch() {
         params.delete("q");
       }
 
-      router.push(`/?${params.toString()}`);
+      const newQuery = params.toString();
+      const currentQuery = searchParams.toString();
+
+      if (newQuery !== currentQuery) {
+        router.push(`/?${params.toString()}`);
+      }
     }, 300);
     return () => clearTimeout(id);
   }, [value, router, searchParams]);
